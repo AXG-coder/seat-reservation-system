@@ -10,6 +10,7 @@ type Props = {
 
 const Session = (props: Props) => {
   const deleteSession = async () => {
+    localStorage.removeItem("guestInfoArray");
     const apiKey = localStorage.getItem("apiKey");
     try {
       const res = await axios.delete("api/deleteSessionAndAudience", {

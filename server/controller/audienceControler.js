@@ -1,6 +1,20 @@
 const { set } = require("mongoose")
 const audienceModel = require("../model/audienceModel")
+const seatModel = require("../model/seatModel")
 
+const getOneOfAudienceForEditInfo = async (req, res) => {
+    const { name } = req.body
+
+    const oneOfAudience = await audienceModel.findOne({ name })
+
+    if (!oneOfAudience) {
+        res.sendStatus(404)
+        return;
+    }
+
+    res.send(oneOfAudience);
+
+}
 const getOneOfAudience = async (req, res) => {
     const { name } = req.body
 
@@ -47,8 +61,16 @@ const getAllAudience = async (req, res) => {
 
 
 const editInfo = async (req, res) => {
+    const { _id } = req.body;
+    const removeOldSeat = await audienceModel.findById({ _id })
+    if (!removeOldSeat.seatLocation.includes("N/A")) {
+        await seatModel.findOneAndUpdate({ location: removeOldSeat.seatLocation }, {
+            reserved: false
+        });
+    }
     try {
         const { _id, seatLocation, size } = req.body;
+
 
         await audienceModel.findByIdAndUpdate(_id, {
             seatLocation: seatLocation,
@@ -56,10 +78,15 @@ const editInfo = async (req, res) => {
             state: 'Missing'
         });
 
+        await seatModel.findOneAndUpdate({ location: seatLocation }, {
+            reserved: true
+        });
+
         res.sendStatus(200);
     } catch (error) {
-        res.status(400).json(error);
+        res.status(400).json({ error: error.message });
     }
 };
 
-module.exports = { getOneOfAudience, getOneOfAudienceByBarcode, editInfo, getAllAudience }
+
+module.exports = { getOneOfAudience, getOneOfAudienceForEditInfo, getOneOfAudienceByBarcode, editInfo, getAllAudience }

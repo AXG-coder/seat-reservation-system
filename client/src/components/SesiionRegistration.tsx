@@ -1,10 +1,11 @@
 import axios from "axios";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const SesiionRegistration = () => {
   const [sessionName, setSessionName] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [planesTypes, setPlanesTypes] = useState([]);
   const [planeType, setPlaneType] = useState("");
 
   const handleStartDateChange = (event: {
@@ -66,6 +67,25 @@ const SesiionRegistration = () => {
     }
   };
 
+  useEffect(() => {
+    const getPlanesTypes = async () => {
+      try {
+        const apiKey = localStorage.getItem("apiKey");
+        const res = await axios.get("api/getPlanesTypes", {
+          headers: {
+            key: apiKey || "",
+          },
+        });
+
+        setPlanesTypes(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getPlanesTypes();
+  }, []);
+
   return (
     <div className="flex items-center justify-center py-28">
       <form
@@ -91,8 +111,18 @@ const SesiionRegistration = () => {
           className="rounded text-2xl"
         >
           <option value="">select</option>
-          <option value="plane737">plane737</option>
+          {planesTypes.map((plane) => (
+            <option key={plane} value={plane}>
+              {plane}
+            </option>
+          ))}
         </select>
+        {planeType ? (
+          <img
+            src={`http://localhost:5000/plane/img/${planeType}.png`}
+            className="w-[400px]"
+          />
+        ) : null}
         <button type="submit" className="Link ">
           Submit
         </button>

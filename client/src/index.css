@@ -82,3 +82,26 @@ td {
 input {
   background-color: #3b3b3b;
 }
+
+.plane-seat-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 8px;
+}
+
+.seat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eaeaea;
+  border-radius: 4px;
+}
+
+.available {
+  background-color: #b8e986;
+}
+
+.reserved {
+  background-color: #ff0000;
+}

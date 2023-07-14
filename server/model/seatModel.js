@@ -12,6 +12,6 @@ const seatSchema = new Schema({
         required: true,
         default: false
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Seat', seatSchema)

@@ -6,7 +6,8 @@ export default {
       colors: {
         primary: "#141414",
         Secondary: '#1c1c1c',
-        color: '#e5e7eb'
+        color: '#e5e7eb',
+        main: '655cc9'
       },
       gridTemplateColumns: {
         '24': 'repeat(24, minmax(0, 1fr))',

@@ -13,6 +13,12 @@ app.use((req, res, next) => {
     next();
 })
 
+app.use(express.static(__dirname + "/dist"))
+
+app.get('/', function (req, res) {
+    res.sendFile(path(__dirname, "dist", "index.html"))
+})
+
 app.use('/api', mainAppRoutes)
 
 app.use('/barcode', express.static('barcode'))

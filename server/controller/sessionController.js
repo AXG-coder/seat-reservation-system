@@ -1,39 +1,51 @@
 const audienceModel = require("../model/audienceModel")
 const sessionTypeModel = require("../model/sessionTypeModel")
 const seatModel = require("../model/seatModel")
-const seatMapData = require('../plane/seatMapData')
+const { seat } = require('../plane/seatMapData')
 const fs = require('fs')
 
-const sessionRegistration = (req, res) => {
+const sessionRegistration = async (req, res) => {
     try {
-        const { sessionType, date, planeType } = req.body
+        const { sessionType, date, planeType } = req.body;
 
         const newSession = new sessionTypeModel({
             sessionType,
             date,
             planeType
-        })
+        });
 
-        newSession.save()
-            .then(() => {
-                seatRegistration()
-                res.sendStatus(200)
-            })
-            .catch((error) => { res.sendStatus(400).json(error) })
+        await newSession.save();
+
+        seatRegistration();
+
+        res.sendStatus(200);
     } catch (error) {
-        res.sendStatus(400).json(error)
+        res.status(400).json({ error });
     }
-}
+};
 
-const seatRegistration = () => {
-    seatMapData.map((iteam) => {
-        const seat = new seatModel({
-            location: iteam
-        })
-        seat.save()
-            .catch((error) => { console.error(error) })
-    })
-}
+const seatRegistration = async () => {
+    for (let i = 0; i < seat.length; i++) {
+        const item = seat[i];
+        try {
+            await new Promise((resolve) => {
+                setTimeout(async () => {
+                    try {
+                        await seatModel.create({
+                            location: item
+                        });
+                        resolve();
+                    } catch (error) {
+                        console.error(error);
+                        resolve();
+                    }
+                }, 60); // Delay each seat registration by i seconds (1000 milliseconds = 1 second)
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+};
 
 const IsThereASession = async (req, res) => {
     const session = await sessionTypeModel.findOne()

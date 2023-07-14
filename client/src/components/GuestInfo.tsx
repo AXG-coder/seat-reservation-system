@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import GuestInfoRegistration from "./GuestInfoRegistration";
+import PlaneSeat from "./PlaneSeat";
 
 interface guestInfoiteIteam {
   _id: string;
@@ -11,12 +12,21 @@ interface guestInfoiteIteam {
   barcode: number;
 }
 
+interface Seat {
+  location: string;
+  reserved: boolean;
+}
+
 const GuestInfo = () => {
   const [guestName, setguestName] = useState("");
 
   const [viewInfo, setViewInfo] = useState(false);
 
   const [guestInfo, setGuestInfo] = useState<guestInfoiteIteam | undefined>();
+
+  const [seats, setSeats] = useState<Seat[]>([]);
+
+  const [openSeat, setOpenSeat] = useState<boolean>(false);
 
   const getOneOfGuest = async () => {
     if (guestName === "") {
@@ -33,7 +43,7 @@ const GuestInfo = () => {
     }
     try {
       const res = await axios.post(
-        "api/getOneOfAudience",
+        "api/getOneOfAudienceForEditInfo",
         {
           name: guestName,
         },
@@ -47,6 +57,7 @@ const GuestInfo = () => {
         setGuestInfo(res.data);
         setViewInfo(true);
         setguestName("");
+        getSeat();
       }
     } catch (error) {
       console.error(error);
@@ -58,6 +69,23 @@ const GuestInfo = () => {
       setViewInfo(false);
     }
   };
+
+  const getSeat = async () => {
+    try {
+      const res = await axios.get("api/getSeatState", {
+        headers: {
+          key: localStorage.getItem("apiKey") || "",
+        },
+      });
+      if (res.status === 200) {
+        setSeats(res.data);
+        setOpenSeat(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col py-12 place-items-center justify-center gap-6">
@@ -65,7 +93,7 @@ const GuestInfo = () => {
         <input
           type="text"
           id="apiKey"
-          value={guestName}
+          value={guestName.split(" ")[0]}
           onChange={(e) => setguestName(e.target.value)}
           className="rounded-xl h-12 text-center"
         />
@@ -82,6 +110,7 @@ const GuestInfo = () => {
           barcode={guestInfo.barcode}
         />
       ) : null}
+      {openSeat ? <PlaneSeat seats={seats} /> : null}
     </>
   );
 };

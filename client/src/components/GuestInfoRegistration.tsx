@@ -93,7 +93,7 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
           <div className="flex gap-2">
             <h2>Seat: </h2>
             <input
-              value={guestInfo.seatLocation}
+              value={guestInfo.seatLocation.split(" ")[0]}
               className="rounded-xl text-center w-16"
               onChange={handleSeatLocationChange}
             />
@@ -116,7 +116,7 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
               }}
               content={() => componentRef.current}
             />
-            <div ref={componentRef} className="flex gap-12 bg-white">
+            <div ref={componentRef} className="flex gap-[320px] bg-white">
               <PrintGuestInfo
                 name={guestInfo.name}
                 seatLocation={guestInfo.seatLocation}
@@ -129,7 +129,6 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 name={guestInfo.name}
                 seatLocation={guestInfo.seatLocation}
                 size={guestInfo.size}
-                barcode={guestInfo.barcode}
                 sessionName={sessionName}
                 date={date}
               />
