@@ -57,6 +57,9 @@ const SessionDetails = () => {
             {localStorage.getItem("sessionType")}
           </h2>
           <h2 className="text-center text-2xl  text-black">
+            {localStorage.getItem("fromTo")}
+          </h2>
+          <h2 className="text-center text-2xl  text-black">
             {localStorage.getItem("sessionDate")}
           </h2>
         </div>
@@ -75,7 +78,7 @@ const SessionDetails = () => {
                 </thead>
                 <tbody>
                   {guests.map((item, index) => (
-                    <tr key={item.name}>
+                    <tr key={item.name} className="text-center">
                       <td>{index + 1}:</td>
                       <td>{item.name}</td>
                       <td>{item.seatLocation}</td>

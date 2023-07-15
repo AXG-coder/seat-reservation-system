@@ -7,6 +7,10 @@ const sessionSchema = new Schema({
         type: String,
         required: true
     },
+    fromTo: {
+        type: String,
+        required: true
+    },
     planeType: {
         type: String,
         required: true

@@ -9,6 +9,7 @@ interface guestInfoiteIteam {
   name: string;
   seatLocation: string;
   size: number;
+  PCS: number;
   barcode: number;
 }
 
@@ -108,6 +109,7 @@ const GuestInfo = () => {
           seatLocation={guestInfo.seatLocation}
           size={guestInfo.size}
           barcode={guestInfo.barcode}
+          PCS={guestInfo.PCS}
         />
       ) : null}
       {openSeat ? <PlaneSeat seats={seats} /> : null}

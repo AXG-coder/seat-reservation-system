@@ -8,6 +8,7 @@ interface Props {
   _id: string;
   name: string;
   seatLocation: string;
+  PCS: number;
   size: number;
   barcode: number;
 }
@@ -18,10 +19,13 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
   const [redayToPrint, setredayToPrint] = useState(false);
 
   const [sessionName, setsessionName] = useState<string | null>("");
+  const [fromTO, setfromTO] = useState<string | null>("");
 
   const [date, setDate] = useState<string>("");
 
   const componentRef = useRef<HTMLDivElement>(null);
+
+  const luggageBarcodeRef = useRef<HTMLDivElement>(null);
 
   const handleSeatLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -36,6 +40,13 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
     setGuestInfo((prevGuestInfo) => ({
       ...prevGuestInfo,
       size: newValue,
+    }));
+  };
+  const handlePCSChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(e.target.value);
+    setGuestInfo((prevGuestInfo) => ({
+      ...prevGuestInfo,
+      PCS: newValue,
     }));
   };
 
@@ -55,6 +66,7 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
           _id: guestInfo._id,
           seatLocation: guestInfo.seatLocation,
           size: guestInfo.size,
+          PCS: guestInfo.PCS,
         },
         {
           headers: {
@@ -65,6 +77,7 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
       if (res.status === 200) {
         setredayToPrint(true);
         setsessionName(localStorage.getItem("sessionName"));
+        setfromTO(localStorage.getItem("fromTo"));
         const formatDate = () => {
           const date = new Date();
           return date.toLocaleDateString("en-GB", {
@@ -99,7 +112,15 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
             />
           </div>
           <div className="flex gap-2">
-            <h2>Size: </h2>
+            <h2>PCS: </h2>
+            <input
+              value={guestInfo.PCS}
+              className="rounded-xl text-center w-16"
+              onChange={handlePCSChange}
+            />
+          </div>
+          <div className="flex gap-2">
+            <h2>WT: </h2>
             <input
               value={guestInfo.size}
               className="rounded-xl text-center w-16"
@@ -116,7 +137,10 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
               }}
               content={() => componentRef.current}
             />
-            <div ref={componentRef} className="flex gap-[320px] bg-white">
+            <div
+              ref={componentRef}
+              className="flex w-[755.91PX] justify-between bg-white"
+            >
               <PrintGuestInfo
                 name={guestInfo.name}
                 seatLocation={guestInfo.seatLocation}
@@ -124,6 +148,8 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 barcode={guestInfo.barcode}
                 sessionName={sessionName}
                 date={date}
+                PCS={guestInfo.PCS}
+                fromTO={fromTO}
               />
               <PrintGuestInfo
                 name={guestInfo.name}
@@ -131,6 +157,41 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 size={guestInfo.size}
                 sessionName={sessionName}
                 date={date}
+                PCS={guestInfo.PCS}
+                fromTO={fromTO}
+              />
+            </div>
+            <ReactToPrint
+              trigger={() => {
+                return <button>Print</button>;
+              }}
+              content={() => luggageBarcodeRef.current}
+            />
+            <div
+              ref={luggageBarcodeRef}
+              className="bg-white flex flex-col justify-center "
+            >
+              <img
+                src={`http://localhost:5000/barcode/${guestInfo.barcode}.png`}
+                className="p-1 w-[188.98px] h-[75.59px]"
+              />
+              <img
+                src={`http://localhost:5000/barcode/${guestInfo.barcode}.png`}
+                className="p-1 w-[188.98px] h-[75.59px]"
+              />
+              <img
+                src={`http://localhost:5000/barcode/${guestInfo.barcode}.png`}
+                className="p-1 w-[188.98px] h-[75.59px]"
+              />
+              <div className="h-[1476.38px]" />
+              <PrintGuestInfo
+                name={guestInfo.name}
+                seatLocation={guestInfo.seatLocation}
+                size={guestInfo.size}
+                sessionName={sessionName}
+                date={date}
+                PCS={guestInfo.PCS}
+                fromTO={fromTO}
               />
             </div>
           </>

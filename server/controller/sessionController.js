@@ -6,10 +6,11 @@ const fs = require('fs')
 
 const sessionRegistration = async (req, res) => {
     try {
-        const { sessionType, date, planeType } = req.body;
+        const { sessionType, fromTo, date, planeType } = req.body;
 
         const newSession = new sessionTypeModel({
             sessionType,
+            fromTo,
             date,
             planeType
         });

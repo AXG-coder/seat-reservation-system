@@ -6,6 +6,7 @@ import Session from "../components/Session";
 import PropagateLoader from "react-spinners/PropagateLoader";
 interface SessionData {
   sessionType: string;
+  fromTo: string;
   date: string;
   planeType: string;
 }
@@ -26,6 +27,7 @@ const MainRoot = () => {
         const json = res.data;
         localStorage.setItem("sessionType", res.data.sessionType);
         localStorage.setItem("sessionDate", res.data.date);
+        localStorage.setItem("fromTo", res.data.fromTo);
         setSession(json);
         setLoading(false);
       } catch (error) {
@@ -49,6 +51,7 @@ const MainRoot = () => {
           sessionType={session.sessionType}
           date={session.date}
           planeType={session.planeType}
+          fromTo={session.fromTo}
         />
       ) : (
         <SesiionRegistration />

@@ -10,6 +10,7 @@ const NameRegistration = (req, res) => {
         name: name,
         seatLocation: `N/A ${barcode.slice(0, 3)}`,
         size: 0,
+        PCS: 0,
         barcode: barcode,
     });
 

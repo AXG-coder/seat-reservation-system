@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 const SesiionRegistration = () => {
   const [sessionName, setSessionName] = useState("");
+  const [fromTo, setFromTo] = useState("");
   const [startDate, setStartDate] = useState("");
   const [planesTypes, setPlanesTypes] = useState([]);
   const [planeType, setPlaneType] = useState("");
@@ -43,6 +44,7 @@ const SesiionRegistration = () => {
         "api/sessionRegistration",
         {
           sessionType: sessionName,
+          fromTo: fromTo,
           date: formatDate(startDate) as string,
           planeType: planeType,
         },
@@ -92,11 +94,17 @@ const SesiionRegistration = () => {
         onSubmit={handleSubmit}
         className="flex flex-col gap-8 items-center justify-center"
       >
-        <div className="text-3xl text-center">Session Type</div>
+        <div className="text-3xl text-center">AIRLINE</div>
         <input
           type="text"
           onChange={(e) => setSessionName(e.target.value)}
           className="text-3xl rounded-xl h-12 text-center"
+        />
+        <div className="text-2xl text-center">From - to</div>
+        <input
+          type="text"
+          onChange={(e) => setFromTo(e.target.value)}
+          className="text-2xl rounded-xl h-12 text-center"
         />
         <div className="text-3xl text-center">Date</div>
         <input

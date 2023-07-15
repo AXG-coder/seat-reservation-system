@@ -5,6 +5,7 @@ import GuestSearchViweBox from "./GuestSearchViweBox";
 interface GuestInfo {
   name: string;
   seatLocation: string;
+  PCS: number;
   size: number;
   barcode: number;
 }
@@ -98,6 +99,7 @@ const NameScanner = () => {
             seatLocation={guestInfo.seatLocation}
             size={guestInfo.size}
             barcode={guestInfo.barcode}
+            PCS={guestInfo.PCS}
           />
         ))}
     </div>

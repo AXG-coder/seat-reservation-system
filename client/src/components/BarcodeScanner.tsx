@@ -6,6 +6,7 @@ import GuestSearchViweBox from "./GuestSearchViweBox";
 interface GuestInfo {
   name: string;
   seatLocation: string;
+  PCS: number;
   size: number;
   barcode: number;
 }
@@ -61,7 +62,8 @@ const BarcodeScanner = () => {
     };
 
     getByBarcode();
-  }, [barcodescan, guestInfoArray]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [barcodescan]);
 
   const postManualBarcode = async () => {
     try {
@@ -141,6 +143,7 @@ const BarcodeScanner = () => {
               name={guestInfo.name}
               seatLocation={guestInfo.seatLocation}
               size={guestInfo.size}
+              PCS={guestInfo.PCS}
               barcode={guestInfo.barcode}
             />
           </div>

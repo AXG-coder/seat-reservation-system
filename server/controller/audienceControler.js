@@ -69,12 +69,13 @@ const editInfo = async (req, res) => {
         });
     }
     try {
-        const { _id, seatLocation, size } = req.body;
+        const { _id, seatLocation, size, PCS } = req.body;
 
 
         await audienceModel.findByIdAndUpdate(_id, {
             seatLocation: seatLocation,
             size: size,
+            PCS: PCS,
             state: 'Missing'
         });
 

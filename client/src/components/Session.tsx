@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 type Props = {
   sessionType: string;
+  fromTo: string;
   date: string; //* we save as string because the date format is like this: 2023/7/10
   planeType: string;
 };
@@ -33,7 +34,8 @@ const Session = (props: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center pt-40 gap-5">
-      <div className="text-4xl">Session Type: {props.sessionType}</div>
+      <div className="text-4xl">AIRLINE: {props.sessionType}</div>
+      <div className="text-4xl">FOR - TO: {props.fromTo}</div>
       <div className="text-2xl">{props.date}</div>
       <div className="text-2xl">{props.planeType}</div>
       <Link to="/Sessiondetails" className="Link  mt-12">
