@@ -6,6 +6,7 @@ import GuestSearchViweBox from "./GuestSearchViweBox";
 interface GuestInfo {
   name: string;
   seatLocation: string;
+  gender: string;
   PCS: number;
   size: number;
   barcode: number;
@@ -16,8 +17,9 @@ const BarcodeScanner = () => {
   const [barcodescan, setBarcodescan] = useState<any>("");
   const [manualbarcode, setManualBarcode] = useState<string>("");
   const [guestInfoArray, setGuestInfoArray] = useState<GuestInfo[]>([]);
-  const [numberOfGuest, setNumberOfGuest] = useState<number>();
-  const [numberOfGuestAccept, setNumberOfGuestAccept] = useState<number>();
+  const [numberOfGuest, setNumberOfGuest] = useState<number>(0);
+  const [numberOfGuestAccept, setNumberOfGuestAccept] = useState<number>(0);
+  const [barcodeSearch, setBarcodeSearch] = useState<number[]>([]);
 
   useScanDetection({
     onComplete: setBarcodescan,
@@ -69,7 +71,7 @@ const BarcodeScanner = () => {
     try {
       const res = await axios.post(
         "../api/getOneOfAudienceByBarcode",
-        { barcode: manualbarcode },
+        { barcode: Number(manualbarcode) },
         { headers: { key: localStorage.getItem("apiKey") } }
       );
 
@@ -94,6 +96,7 @@ const BarcodeScanner = () => {
           key: localStorage.getItem("apiKey") || "",
         },
       });
+
       if (res.status === 200) {
         const data = res.data;
         const numberOfGuest =
@@ -103,11 +106,32 @@ const BarcodeScanner = () => {
         setNumberOfGuest(numberOfGuest);
         setNumberOfGuestAccept(data[0]?.[1]?.length || 0);
       }
-      console.log(numberOfGuest);
     } catch (error) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    axios
+      .get("../api/getAllAudienceForSearchEngine", {
+        headers: {
+          key: localStorage.getItem("apiKey") || "",
+        },
+      })
+      .then((res) => {
+        const barcodes = res.data.map(
+          (item: { barcode: number }) => item.barcode
+        );
+        setBarcodeSearch(barcodes);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const filterBarcode = barcodeSearch.filter((barcode) => {
+    return String(barcode).startsWith(manualbarcode);
+  });
 
   return (
     <>
@@ -120,6 +144,19 @@ const BarcodeScanner = () => {
           onChange={(e) => setManualBarcode(e.target.value)}
           className="rounded-xl h-12 text-center"
         />
+        {manualbarcode === "" ? null : (
+          <div className="max-h-[300px] overflow-y-auto bg-Secondary p-2 rounded-lg">
+            {filterBarcode.map((barcode) => (
+              <h2
+                key={barcode}
+                onClick={() => setManualBarcode(String(barcode))}
+                className="text-end cursor-pointer mb-2"
+              >
+                {barcode}
+              </h2>
+            ))}
+          </div>
+        )}
         <button
           className="text-1xl"
           onClick={() => {
@@ -137,11 +174,11 @@ const BarcodeScanner = () => {
         .slice()
         .reverse()
         .map((guestInfo, index) => (
-          <div className="pt-6">
+          <div key={index} className="pt-6">
             <GuestSearchViweBox
-              key={index}
               name={guestInfo.name}
               seatLocation={guestInfo.seatLocation}
+              gender={guestInfo.gender}
               size={guestInfo.size}
               PCS={guestInfo.PCS}
               barcode={guestInfo.barcode}

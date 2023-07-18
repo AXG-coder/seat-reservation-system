@@ -45,17 +45,37 @@ const getOneOfAudienceByBarcode = async (req, res) => {
 
 
 const getAllAudience = async (req, res) => {
-    const Audience = await audienceModel.find()
+    try {
+        const Audience = await audienceModel.find();
 
-    AudienceStateGroup = Audience.reduce((acc, curr) => {
-        if (!acc[curr.state]) {
-            acc[curr.state] = []
+        const AudienceStateGroup = Audience.reduce((acc, curr) => {
+            if (!acc[curr.state]) {
+                acc[curr.state] = [];
+            }
+            acc[curr.state].push(curr);
+            return acc;
+        }, {});
+
+        const sortedData = Object.entries(AudienceStateGroup);
+
+        const acceptGroup = sortedData.find(([state]) => state === "Accept");
+        if (acceptGroup) {
+            sortedData.splice(sortedData.indexOf(acceptGroup), 1);
+            sortedData.unshift(acceptGroup);
         }
-        acc[curr.state].push(curr)
-        return acc
-    }, {})
 
-    res.status(200).json(Object.entries(AudienceStateGroup))
+        res.status(200).json(sortedData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+const getAllAudienceForSearchEngine = async (req, res) => {
+    const Audience = await audienceModel.find().select('name barcode')
+
+    res.status(200).json(Audience)
 }
 
 
@@ -90,4 +110,4 @@ const editInfo = async (req, res) => {
 };
 
 
-module.exports = { getOneOfAudience, getOneOfAudienceForEditInfo, getOneOfAudienceByBarcode, editInfo, getAllAudience }
+module.exports = { getOneOfAudience, getOneOfAudienceForEditInfo, getOneOfAudienceByBarcode, editInfo, getAllAudience, getAllAudienceForSearchEngine }

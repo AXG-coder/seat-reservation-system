@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import GuestInfoRegistration from "./GuestInfoRegistration";
 import PlaneSeat from "./PlaneSeat";
@@ -28,6 +28,28 @@ const GuestInfo = () => {
   const [seats, setSeats] = useState<Seat[]>([]);
 
   const [openSeat, setOpenSeat] = useState<boolean>(false);
+
+  const [namesSearch, setNameSearch] = useState<string[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("api/getAllAudienceForSearchEngine", {
+        headers: {
+          key: localStorage.getItem("apiKey"),
+        },
+      })
+      .then((res) => {
+        const names = res.data.map((item: { name: string }) => item.name);
+        setNameSearch(names);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const filterName = namesSearch.filter((name) => {
+    return name.toLocaleLowerCase().includes(guestName.toLocaleLowerCase());
+  });
 
   const getOneOfGuest = async () => {
     if (guestName === "") {
@@ -94,10 +116,23 @@ const GuestInfo = () => {
         <input
           type="text"
           id="apiKey"
-          value={guestName.split(" ")[0]}
+          value={guestName}
           onChange={(e) => setguestName(e.target.value)}
           className="rounded-xl h-12 text-center"
         />
+        {guestName === "" ? null : (
+          <div className="max-h-[300px] overflow-y-auto bg-Secondary p-2 rounded-lg ">
+            {filterName.map((name) => (
+              <h2
+                key={name}
+                onClick={() => setguestName(name)}
+                className="text-end cursor-pointer mb-2"
+              >
+                {name}
+              </h2>
+            ))}
+          </div>
+        )}
         <button className="text-1xl" onClick={getOneOfGuest}>
           research
         </button>

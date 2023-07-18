@@ -19,13 +19,34 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
   const [redayToPrint, setredayToPrint] = useState(false);
 
   const [sessionName, setsessionName] = useState<string | null>("");
+
   const [fromTO, setfromTO] = useState<string | null>("");
+
+  const [printCounter, setPrintCounter] = useState<number>(0);
 
   const [date, setDate] = useState<string>("");
 
   const componentRef = useRef<HTMLDivElement>(null);
 
   const luggageBarcodeRef = useRef<HTMLDivElement>(null);
+
+  const handleprintCounter = async () => {
+    console.log(localStorage.getItem("sessionName"));
+    const res = await axios.post(
+      "api/printConter",
+      {
+        sessionType: localStorage.getItem("sessionName"),
+      },
+      {
+        headers: {
+          key: localStorage.getItem("apiKey"),
+        },
+      }
+    );
+    if (res.status === 200) {
+      setPrintCounter(res.data.printCounter);
+    }
+  };
 
   const handleSeatLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -127,7 +148,14 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
               onChange={handleSizeChange}
             />
           </div>
-          <button onClick={postGuestInfo}>register</button>
+          <button
+            onClick={() => {
+              postGuestInfo();
+              handleprintCounter();
+            }}
+          >
+            register
+          </button>
         </div>
         {redayToPrint ? (
           <>
@@ -150,6 +178,8 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 date={date}
                 PCS={guestInfo.PCS}
                 fromTO={fromTO}
+                BOARDINGPASS={"BOARDING PASS"}
+                printCounter={printCounter}
               />
               <PrintGuestInfo
                 name={guestInfo.name}
@@ -159,6 +189,8 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 date={date}
                 PCS={guestInfo.PCS}
                 fromTO={fromTO}
+                BOARDINGPASS={"BOARDING PASS"}
+                printCounter={null}
               />
             </div>
             <ReactToPrint
@@ -192,7 +224,15 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 date={date}
                 PCS={guestInfo.PCS}
                 fromTO={fromTO}
+                BOARDINGPASS={null}
+                printCounter={null}
               />
+              <div className="w-[100%] flex justify-center">
+                <img
+                  src={`http://localhost:5000/barcode/${guestInfo.barcode}.png`}
+                  className=" w-[100.98px] h-[40.59px]"
+                />
+              </div>
             </div>
           </>
         ) : null}

@@ -6,9 +6,11 @@ import Swal from "sweetalert2";
 interface Guest {
   name: string;
   seatLocation: string;
+  PCS: number;
   size: number;
   barcode: number;
   state: string;
+  gender: string;
 }
 
 interface Details {
@@ -17,6 +19,8 @@ interface Details {
 
 const SessionDetails = () => {
   const [details, setDetails] = useState<Details>({ state: [] });
+  const [totalPCS, setTotalPCS] = useState<number>(0);
+  const [totalSize, setTotalSize] = useState<number>(0);
 
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +46,24 @@ const SessionDetails = () => {
 
     getDetails();
   }, []);
+
+  useEffect(() => {
+    let totalPCSCount = 0;
+    let totalSizeCount = 0;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    details.state.forEach(([_, guests]) => {
+      guests.forEach((item) => {
+        if (item.state === "Accept") {
+          totalPCSCount += item.PCS;
+          totalSizeCount += item.size;
+        }
+      });
+    });
+
+    setTotalPCS(totalPCSCount);
+    setTotalSize(totalSizeCount);
+  }, [details]);
 
   return (
     <div className="flex flex-col place-items-center justify-center pt-12 gap-8">
@@ -72,8 +94,10 @@ const SessionDetails = () => {
                   <tr>
                     <th>N</th>
                     <th>Name</th>
+                    <th>Gender</th>
                     <th>SeatLocation</th>
-                    <th>Size</th>
+                    <th>PCS</th>
+                    <th>WT</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,12 +105,20 @@ const SessionDetails = () => {
                     <tr key={item.name} className="text-center">
                       <td>{index + 1}:</td>
                       <td>{item.name}</td>
+                      <td>{item.gender}</td>
                       <td>{item.seatLocation}</td>
-                      <td>{item.size}</td>
+                      <td>{item.PCS}</td>
+                      <td>{item.size} KG</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {state === "Accept" && (
+                <div className="text-center flex justify-center gap-10 pt-5">
+                  <p className="text-black">Total PCS: {totalPCS}</p>
+                  <p className="text-black">Total WT: {totalSize} KG</p>
+                </div>
+              )}
             </div>
           </div>
         ))}

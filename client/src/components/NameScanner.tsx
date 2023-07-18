@@ -5,6 +5,7 @@ import GuestSearchViweBox from "./GuestSearchViweBox";
 interface GuestInfo {
   name: string;
   seatLocation: string;
+  gender: string;
   PCS: number;
   size: number;
   barcode: number;
@@ -15,6 +16,7 @@ const NameScanner = () => {
   const [guestInfoArray, setGuestInfoArray] = useState<GuestInfo[]>([]);
   const [numberOfGuest, setNumberOfGuest] = useState<number>();
   const [numberOfGuestAccept, setNumberOfGuestAccept] = useState<number>();
+  const [namesSearch, setNameSearch] = useState<string[]>([]);
 
   useEffect(() => {
     const savedGuestInfo = localStorage.getItem("guestInfoArray");
@@ -66,6 +68,25 @@ const NameScanner = () => {
       console.error(error);
     }
   };
+  useEffect(() => {
+    axios
+      .get("../api/getAllAudienceForSearchEngine", {
+        headers: {
+          key: localStorage.getItem("apiKey"),
+        },
+      })
+      .then((res) => {
+        const names = res.data.map((item: { name: string }) => item.name);
+        setNameSearch(names);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const filterName = namesSearch.filter((name) => {
+    return name.toLocaleLowerCase().includes(sandName.toLocaleLowerCase());
+  });
 
   return (
     <div className="flex flex-col py-32 place-items-center justify-center gap-6">
@@ -77,6 +98,19 @@ const NameScanner = () => {
         onChange={(e) => setsandName(e.target.value)}
         className="rounded-xl h-12 text-center"
       />
+      {sandName === "" ? null : (
+        <div className="max-h-[300px] overflow-y-auto bg-Secondary p-2 rounded-lg ">
+          {filterName.map((name) => (
+            <h2
+              key={name}
+              onClick={() => setsandName(name)}
+              className="text-end cursor-pointer mb-2"
+            >
+              {name}
+            </h2>
+          ))}
+        </div>
+      )}
       <button
         className="text-1xl"
         onClick={() => {
@@ -86,6 +120,7 @@ const NameScanner = () => {
       >
         Search
       </button>
+
       <h2 className="text-center p-6 text-2xl">
         Accept: {numberOfGuestAccept} Of {numberOfGuest}
       </h2>
@@ -96,6 +131,7 @@ const NameScanner = () => {
           <GuestSearchViweBox
             key={index}
             name={guestInfo.name}
+            gender={guestInfo.gender}
             seatLocation={guestInfo.seatLocation}
             size={guestInfo.size}
             barcode={guestInfo.barcode}

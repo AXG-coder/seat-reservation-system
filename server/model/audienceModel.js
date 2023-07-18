@@ -13,6 +13,10 @@ const audienceSchema = new Schema({
         required: true,
         unique: true,
     },
+    gender: {
+        type: String,
+        required: true
+    },
     PCS: {
         type: Number,
         required: true

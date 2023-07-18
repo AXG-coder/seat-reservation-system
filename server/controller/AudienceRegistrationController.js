@@ -3,12 +3,13 @@ const bwipjs = require('bwip-js');
 const fs = require('fs');
 
 const NameRegistration = (req, res) => {
-    const { name } = req.body;
+    const { name, gender } = req.body;
     const barcode = String(Math.floor(Math.random() * 10000000000));
 
     const newRegist = new audienceModel({
         name: name,
         seatLocation: `N/A ${barcode.slice(0, 3)}`,
+        gender: gender,
         size: 0,
         PCS: 0,
         barcode: barcode,

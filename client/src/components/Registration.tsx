@@ -6,10 +6,11 @@ import Swal from "sweetalert2";
 interface Props {}
 
 const Registration: React.FC<Props> = () => {
-  const [guestName, setguestName] = useState("");
+  const [guestName, setguestName] = useState<string>("");
+  const [guestGender, setGuestGender] = useState<string>("");
 
   const postRegistration = async () => {
-    if (guestName === "") {
+    if (guestName === "" || guestGender === "") {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -22,6 +23,7 @@ const Registration: React.FC<Props> = () => {
         "api/NameRegistration",
         {
           name: guestName,
+          gender: guestGender,
         },
         {
           headers: {
@@ -53,6 +55,16 @@ const Registration: React.FC<Props> = () => {
           onChange={(e) => setguestName(e.target.value)}
           className="rounded-xl h-12 text-center"
         />
+        <select
+          onChange={(e) => setGuestGender(e.target.value)}
+          name="plane"
+          className="rounded text-2xl"
+        >
+          <option value="">Select Gender</option>
+          <option value="adult">adult</option>
+          <option value="child">child</option>
+          <option value="infant">infant</option>
+        </select>
         <button className="text-1xl" onClick={postRegistration}>
           Register
         </button>

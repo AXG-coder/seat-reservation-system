@@ -72,8 +72,30 @@ const deleteSessionAndAudience = async (req, res) => {
     }
 }
 
+const printCounter = async (req, res) => {
+    try {
+        const { sessionType } = req.body;
+
+        // Find the document based on sessionType and update the printCounter field
+        const updatedSessionType = await sessionTypeModel.findOneAndUpdate(
+            { sessionType },
+            { $inc: { printCounter: 1 } }, // Increment the printCounter field by 1
+            { new: true } // Return the updated document
+        );
+
+        res.send(updatedSessionType);
+    } catch (error) {
+        console.error(error);
+        // Handle error
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
+
 module.exports = {
     sessionRegistration,
     IsThereASession,
-    deleteSessionAndAudience
+    deleteSessionAndAudience,
+    printCounter
 }
