@@ -11,6 +11,7 @@ interface guestInfoiteIteam {
   size: number;
   PCS: number;
   barcode: number;
+  Seq: number;
 }
 
 interface Seat {
@@ -145,6 +146,7 @@ const GuestInfo = () => {
           size={guestInfo.size}
           barcode={guestInfo.barcode}
           PCS={guestInfo.PCS}
+          Seq={guestInfo.Seq}
         />
       ) : null}
       {openSeat ? <PlaneSeat seats={seats} /> : null}

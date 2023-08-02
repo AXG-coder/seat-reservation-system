@@ -8,6 +8,7 @@ export default function NavBar() {
     { name: "Registration", link: "/Registration" },
     { name: "GuestInfo", link: "/GuestInfoRegistrationPage" },
     { name: "Guest Search", link: "/GuestSearch" },
+    { name: "Session Details", link: "/Sessiondetails" },
   ];
   const deletKey = () => {
     localStorage.removeItem("apiKey");

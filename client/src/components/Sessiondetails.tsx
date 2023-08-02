@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import ReactToPrint from "react-to-print";
@@ -17,13 +18,98 @@ interface Details {
   state: [string, Guest[]][];
 }
 
+interface Gender {
+  child: number;
+  adult: number;
+  infant: number;
+}
+
 const SessionDetails = () => {
   const [details, setDetails] = useState<Details>({ state: [] });
   const [totalPCS, setTotalPCS] = useState<number>(0);
   const [totalSize, setTotalSize] = useState<number>(0);
+  const [missingtotalPCS, setMissingTotalPCS] = useState<number>(0);
+  const [missingtotalSize, setMissingTotalSize] = useState<number>(0);
+  const [AcceptGenderCounter, setAcceptGenderCounter] = useState<Gender>({
+    child: 0,
+    adult: 0,
+    infant: 0,
+  });
+  const [MissingGenderCounter, setMissingGenderCounter] = useState<Gender>({
+    child: 0,
+    adult: 0,
+    infant: 0,
+  });
 
   const componentRef = useRef<HTMLDivElement>(null);
 
+  const calculateChildrenCounts = (
+    guests: Guest[],
+    gender: string,
+    state: string
+  ): number => {
+    let acceptedCount = 0;
+
+    guests.forEach((guest) => {
+      if (guest.gender === gender) {
+        if (guest.state === state) {
+          acceptedCount++;
+        }
+      }
+    });
+
+    return acceptedCount;
+  };
+
+  useEffect(() => {
+    // Assuming 'details.state' contains the list of guests
+    const guests = details.state.flatMap(([, guestArray]) => guestArray);
+
+    // Calculate counts for 'Accept' and 'Missing' genders separately
+    const acceptedChildCount = calculateChildrenCounts(
+      guests,
+      "child",
+      "Accept"
+    );
+    const missingChildCount = calculateChildrenCounts(
+      guests,
+      "child",
+      "Missing"
+    );
+    const acceptedAdultCount = calculateChildrenCounts(
+      guests,
+      "adult",
+      "Accept"
+    );
+    const missingAdultCount = calculateChildrenCounts(
+      guests,
+      "adult",
+      "Missing"
+    );
+    const acceptedInfantCount = calculateChildrenCounts(
+      guests,
+      "infant",
+      "Accept"
+    );
+    const missingInfantCount = calculateChildrenCounts(
+      guests,
+      "infant",
+      "Missing"
+    );
+
+    // Update the state variables accordingly
+    setAcceptGenderCounter({
+      child: acceptedChildCount,
+      adult: acceptedAdultCount,
+      infant: acceptedInfantCount,
+    });
+
+    setMissingGenderCounter({
+      child: missingChildCount,
+      adult: missingAdultCount,
+      infant: missingInfantCount,
+    });
+  }, [details.state]);
   useEffect(() => {
     const getDetails = async () => {
       try {
@@ -50,6 +136,8 @@ const SessionDetails = () => {
   useEffect(() => {
     let totalPCSCount = 0;
     let totalSizeCount = 0;
+    let missingtotalPCSCount = 0;
+    let missingtotalSizeCount = 0;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     details.state.forEach(([_, guests]) => {
@@ -58,11 +146,17 @@ const SessionDetails = () => {
           totalPCSCount += item.PCS;
           totalSizeCount += item.size;
         }
+        if (item.state === "Missing") {
+          missingtotalPCSCount += item.PCS;
+          missingtotalSizeCount += item.size;
+        }
       });
     });
 
     setTotalPCS(totalPCSCount);
     setTotalSize(totalSizeCount);
+    setMissingTotalPCS(missingtotalPCSCount);
+    setMissingTotalSize(missingtotalSizeCount);
   }, [details]);
 
   return (
@@ -74,7 +168,7 @@ const SessionDetails = () => {
         content={() => componentRef.current}
       />
       <div className="w-fit px-4 pb-4 bg-white" ref={componentRef}>
-        <div className="flex gap-12">
+        <div className="flex gap-12 justify-between">
           <h2 className="text-center text-2xl  text-black">
             {localStorage.getItem("sessionType")}
           </h2>
@@ -113,11 +207,45 @@ const SessionDetails = () => {
                   ))}
                 </tbody>
               </table>
+              {state === "Missing" && (
+                <>
+                  <div className="text-center flex justify-center gap-10 pt-5">
+                    <p className="text-black">Total PCS: {missingtotalPCS}</p>
+                    <p className="text-black">
+                      Total WT: {missingtotalSize} KG
+                    </p>
+                    <p className="text-black">
+                      Adult: {MissingGenderCounter.adult}
+                    </p>
+                    <p className="text-black">
+                      Child: {MissingGenderCounter.child}
+                    </p>
+
+                    <p className="text-black">
+                      Infant: {MissingGenderCounter.infant}
+                    </p>
+                  </div>
+                </>
+              )}
               {state === "Accept" && (
-                <div className="text-center flex justify-center gap-10 pt-5">
-                  <p className="text-black">Total PCS: {totalPCS}</p>
-                  <p className="text-black">Total WT: {totalSize} KG</p>
-                </div>
+                <>
+                  <div className="text-center flex justify-center gap-10 pt-5">
+                    <p className="text-black">Total PCS: {totalPCS}</p>
+                    <p className="text-black">Total WT: {totalSize} KG</p>
+
+                    <p className="text-black">
+                      Adult: {AcceptGenderCounter.adult}
+                    </p>
+
+                    <p className="text-black">
+                      Child: {AcceptGenderCounter.child}
+                    </p>
+
+                    <p className="text-black">
+                      Infant: {AcceptGenderCounter.infant}
+                    </p>
+                  </div>
+                </>
               )}
             </div>
           </div>

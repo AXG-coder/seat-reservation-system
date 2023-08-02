@@ -2,9 +2,9 @@ interface Props {
   BOARDINGPASS: string | null;
   name: string;
   fromTO: string | null;
-  seatLocation: string;
+  seatLocation: string | null;
   size: number;
-  PCS: number;
+  PCS: number | null;
   barcode?: number;
   sessionName: string | null;
   date: string;
@@ -18,8 +18,12 @@ const PrintGuestInfo: React.FC<Props> = (Props) => {
       <h2 className="text-black">AIRLINE: {Props.sessionName}</h2>
       <h2 className="text-black">FROM-TO: {Props.fromTO}</h2>
       <h2 className="text-black">NAME: {Props.name}</h2>
-      <h2 className="text-black">SEAT: {Props.seatLocation}</h2>
-      <h2 className="text-black">PCS: {Props.PCS}</h2>
+      {Props.PCS && Props.seatLocation ? (
+        <>
+          <h2 className="text-black">SEAT: {Props.seatLocation}</h2>
+          <h2 className="text-black">PCS: {Props.PCS}</h2>
+        </>
+      ) : null}
       <h2 className="text-black">WT: {Props.size}KG</h2>
       {Props.printCounter ? (
         <div className="flex justify-between">

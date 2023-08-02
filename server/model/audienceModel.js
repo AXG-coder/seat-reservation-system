@@ -35,6 +35,11 @@ const audienceSchema = new Schema({
         type: String,
         default: 'No show',
         required: true
+    },
+    Seq: {
+        type: Number,
+        required: true,
+        default: 0
     }
 }, { timestamps: true })
 

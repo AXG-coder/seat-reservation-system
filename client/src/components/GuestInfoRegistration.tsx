@@ -11,6 +11,7 @@ interface Props {
   PCS: number;
   size: number;
   barcode: number;
+  Seq: number;
 }
 
 const GuestInfoRegistration: React.FC<Props> = (props) => {
@@ -22,31 +23,13 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
 
   const [fromTO, setfromTO] = useState<string | null>("");
 
-  const [printCounter, setPrintCounter] = useState<number>(0);
-
   const [date, setDate] = useState<string>("");
+
+  const [confirm, setConfirm] = useState<boolean>(false);
 
   const componentRef = useRef<HTMLDivElement>(null);
 
   const luggageBarcodeRef = useRef<HTMLDivElement>(null);
-
-  const handleprintCounter = async () => {
-    console.log(localStorage.getItem("sessionName"));
-    const res = await axios.post(
-      "api/printConter",
-      {
-        sessionType: localStorage.getItem("sessionName"),
-      },
-      {
-        headers: {
-          key: localStorage.getItem("apiKey"),
-        },
-      }
-    );
-    if (res.status === 200) {
-      setPrintCounter(res.data.printCounter);
-    }
-  };
 
   const handleSeatLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -71,15 +54,30 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
     }));
   };
 
-  const postGuestInfo = async () => {
-    if (guestInfo.seatLocation.includes("N/A")) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Please Choose a seat",
-      });
-      return;
+  const handleprintCounter = async () => {
+    if (guestInfo.Seq === 0) {
+      const res = await axios.post(
+        "api/printConter",
+        {
+          sessionType: localStorage.getItem("sessionName"),
+        },
+        {
+          headers: {
+            key: localStorage.getItem("apiKey"),
+          },
+        }
+      );
+      if (res.status === 200) {
+        setGuestInfo((prevGuestInfo) => ({
+          ...prevGuestInfo,
+          Seq: res.data.printCounter,
+        }));
+        setsessionName(res.data.sessionType);
+      }
     }
+  };
+
+  const postGuestInfo = async () => {
     try {
       const res = await axios.post(
         "api/editInfo",
@@ -88,6 +86,7 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
           seatLocation: guestInfo.seatLocation,
           size: guestInfo.size,
           PCS: guestInfo.PCS,
+          Seq: guestInfo.Seq,
         },
         {
           headers: {
@@ -97,7 +96,6 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
       );
       if (res.status === 200) {
         setredayToPrint(true);
-        setsessionName(localStorage.getItem("sessionName"));
         setfromTO(localStorage.getItem("fromTo"));
         const formatDate = () => {
           const date = new Date();
@@ -116,6 +114,29 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
         text: "The seat is reserved",
       });
       console.error(error);
+    }
+  };
+
+  const deleteAudience = async () => {
+    try {
+      const res = await axios.delete("api/deleteAudience", {
+        headers: {
+          key: localStorage.getItem("apiKey"),
+          _id: guestInfo._id,
+        },
+      });
+
+      if (res.status === 200) {
+        Swal.fire("done", "guest has been deleted", "success");
+        location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "You don't have permission or guest has been registered",
+      });
     }
   };
 
@@ -148,13 +169,27 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
               onChange={handleSizeChange}
             />
           </div>
-          <button
-            onClick={() => {
-              postGuestInfo();
-              handleprintCounter();
-            }}
-          >
-            register
+          {!confirm ? (
+            <button
+              onClick={() => {
+                handleprintCounter(); // Wait for handleprintCounter() to finish
+                setConfirm(true);
+              }}
+            >
+              Register
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                postGuestInfo(); // Wait for postGuestInfo() to finish
+              }}
+            >
+              Confirm
+            </button>
+          )}
+
+          <button className="bg-red-600" onClick={deleteAudience}>
+            Delete
           </button>
         </div>
         {redayToPrint ? (
@@ -179,7 +214,7 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 PCS={guestInfo.PCS}
                 fromTO={fromTO}
                 BOARDINGPASS={"BOARDING PASS"}
-                printCounter={printCounter}
+                printCounter={guestInfo.Seq}
               />
               <PrintGuestInfo
                 name={guestInfo.name}
@@ -215,17 +250,21 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 src={`http://localhost:5000/barcode/${guestInfo.barcode}.png`}
                 className="p-1 w-[188.98px] h-[75.59px]"
               />
-              <div className="h-[1476.38px]" />
+              <div className="h-[1476.38px] flex place-items-center justify-center">
+                <p className="text-black text-center rotate-90 text-4xl">
+                  {fromTO}
+                </p>
+              </div>
               <PrintGuestInfo
                 name={guestInfo.name}
-                seatLocation={guestInfo.seatLocation}
+                seatLocation={null}
                 size={guestInfo.size}
                 sessionName={sessionName}
                 date={date}
-                PCS={guestInfo.PCS}
+                PCS={null}
                 fromTO={fromTO}
                 BOARDINGPASS={null}
-                printCounter={null}
+                printCounter={guestInfo.Seq}
               />
               <div className="w-[100%] flex justify-center">
                 <img

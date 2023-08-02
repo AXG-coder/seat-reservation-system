@@ -1,7 +1,7 @@
 const express = require("express");
 const { sessionRegistration, IsThereASession, deleteSessionAndAudience, printCounter } = require("../controller/sessionController");
 const { NameRegistration } = require("../controller/AudienceRegistrationController");
-const { getOneOfAudience, editInfo, getOneOfAudienceByBarcode, getAllAudience, getOneOfAudienceForEditInfo, getAllAudienceForSearchEngine } = require("../controller/audienceControler");
+const { getOneOfAudience, editInfo, getOneOfAudienceByBarcode, getAllAudience, getOneOfAudienceForEditInfo, getAllAudienceForSearchEngine, deleteAudience } = require("../controller/audienceControler");
 const { authKey } = require("../auth/apiKey");
 const { validKey } = require("../controller/apiKeyControler");
 const { getSeatState, getPlanesTypes } = require("../controller/SeatControler");
@@ -35,5 +35,7 @@ router.get("/getSeatState", authKey(process.env.EMPLOYEE_KEY), getSeatState)
 router.get("/getPlanesTypes", authKey(process.env.EMPLOYEE_KEY), getPlanesTypes)
 
 router.post("/printConter", authKey(process.env.EMPLOYEE_KEY), printCounter)
+
+router.delete('/deleteAudience', authKey(process.env.ADMIN_KEY), deleteAudience)
 
 module.exports = router

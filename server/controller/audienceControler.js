@@ -89,14 +89,15 @@ const editInfo = async (req, res) => {
         });
     }
     try {
-        const { _id, seatLocation, size, PCS } = req.body;
+        const { _id, seatLocation, size, PCS, Seq } = req.body;
 
 
         await audienceModel.findByIdAndUpdate(_id, {
             seatLocation: seatLocation,
             size: size,
             PCS: PCS,
-            state: 'Missing'
+            state: 'Missing',
+            Seq: Seq
         });
 
         await seatModel.findOneAndUpdate({ location: seatLocation }, {
@@ -109,5 +110,22 @@ const editInfo = async (req, res) => {
     }
 };
 
+const deleteAudience = async (req, res) => {
 
-module.exports = { getOneOfAudience, getOneOfAudienceForEditInfo, getOneOfAudienceByBarcode, editInfo, getAllAudience, getAllAudienceForSearchEngine }
+    try {
+        const { _id } = req.headers
+        await audienceModel.findByIdAndRemove({ _id })
+        res.sendStatus(200)
+    }
+    catch (error) {
+        res.status(404).json(error)
+    }
+
+}
+
+
+module.exports = {
+    getOneOfAudience, getOneOfAudienceForEditInfo,
+    getOneOfAudienceByBarcode, editInfo, getAllAudience,
+    getAllAudienceForSearchEngine, deleteAudience
+}

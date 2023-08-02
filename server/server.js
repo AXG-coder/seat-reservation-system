@@ -16,8 +16,8 @@ app.use((req, res, next) => {
 app.use(express.static(__dirname + "/dist"))
 
 app.get('/', function (req, res) {
-    res.sendFile(path(__dirname, "dist", "index.html"))
-})
+    res.sendFile(path.join(__dirname, "dist", "index.html")); // Use path.join to construct the file path
+});
 
 app.use('/api', mainAppRoutes)
 
