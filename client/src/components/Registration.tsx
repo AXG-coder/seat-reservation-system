@@ -128,7 +128,7 @@ const Registration = () => {
         </button>
       </div>
       <div className="felx flex-col  text-center ">
-        <div className="text-4xl">Ecvel file</div>
+        <div className="text-4xl">Upload PAX</div>
         <input
           type="file"
           className="m-12"

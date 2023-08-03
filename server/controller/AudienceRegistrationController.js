@@ -84,9 +84,9 @@ const PAXRegistration = (PAX) => {
     const barcode = String(Math.floor(Math.random() * 10000000000));
 
     const newRegist = new audienceModel({
-        name: PAX[0],
+        name: `${PAX[0]} ${PAX[1]}`,
         seatLocation: `N/A ${barcode.slice(0, 6)}`,
-        gender: PAX[1],
+        gender: PAX[2],
         size: 0,
         PCS: 0,
         barcode: barcode,

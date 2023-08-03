@@ -69,32 +69,32 @@ const SessionDetails = () => {
     const acceptedChildCount = calculateChildrenCounts(
       guests,
       "child",
-      "Accept"
+      "ACCEPTED"
     );
     const missingChildCount = calculateChildrenCounts(
       guests,
       "child",
-      "Missing"
+      "NO SHOW ON THE GATE"
     );
     const acceptedAdultCount = calculateChildrenCounts(
       guests,
       "adult",
-      "Accept"
+      "ACCEPTED"
     );
     const missingAdultCount = calculateChildrenCounts(
       guests,
       "adult",
-      "Missing"
+      "NO SHOW ON THE GATE"
     );
     const acceptedInfantCount = calculateChildrenCounts(
       guests,
       "infant",
-      "Accept"
+      "ACCEPTED"
     );
     const missingInfantCount = calculateChildrenCounts(
       guests,
       "infant",
-      "Missing"
+      "NO SHOW ON THE GATE"
     );
 
     // Update the state variables accordingly
@@ -142,11 +142,11 @@ const SessionDetails = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     details.state.forEach(([_, guests]) => {
       guests.forEach((item) => {
-        if (item.state === "Accept") {
+        if (item.state === "ACCEPTED") {
           totalPCSCount += item.PCS;
           totalSizeCount += item.size;
         }
-        if (item.state === "Missing") {
+        if (item.state === "NO SHOW ON THE GATE") {
           missingtotalPCSCount += item.PCS;
           missingtotalSizeCount += item.size;
         }
@@ -207,7 +207,7 @@ const SessionDetails = () => {
                   ))}
                 </tbody>
               </table>
-              {state === "Missing" && (
+              {state === "NO SHOW ON THE GATE" && (
                 <>
                   <div className="text-center flex justify-center gap-10 pt-5">
                     <p className="text-black">Total PCS: {missingtotalPCS}</p>
@@ -227,7 +227,7 @@ const SessionDetails = () => {
                   </div>
                 </>
               )}
-              {state === "Accept" && (
+              {state === "ACCEPTED" && (
                 <>
                   <div className="text-center flex justify-center gap-10 pt-5">
                     <p className="text-black">Total PCS: {totalPCS}</p>
