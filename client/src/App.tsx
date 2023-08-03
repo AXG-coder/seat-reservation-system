@@ -1,4 +1,4 @@
-import { Routes, Route, HashRouter } from "react-router-dom";
+import { Routes, Route, MemoryRouter } from "react-router-dom";
 import "./App.css";
 import MainRoot from "./pages/MainRoot";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ function App() {
   }, [setApiKey]);
 
   return (
-    <HashRouter>
+    <MemoryRouter>
       <Routes>
         {apiKey === "" ? (
           <>
@@ -51,7 +51,7 @@ function App() {
           </>
         )}
       </Routes>
-    </HashRouter>
+    </MemoryRouter>
   );
 }
 

@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 export default function NavBar() {
   const [open, setOpen] = useState<boolean>(false);
   const Links = [
-    { name: "session", link: "/" },
+    { name: "Flight", link: "/" },
     { name: "Registration", link: "/Registration" },
-    { name: "GuestInfo", link: "/GuestInfoRegistrationPage" },
-    { name: "Guest Search", link: "/GuestSearch" },
-    { name: "Session Details", link: "/Sessiondetails" },
+    { name: "PAX Info", link: "/GuestInfoRegistrationPage" },
+    { name: "PAX Search", link: "/GuestSearch" },
+    { name: "Flight Details", link: "/Sessiondetails" },
   ];
   const deletKey = () => {
     localStorage.removeItem("apiKey");
@@ -39,8 +39,8 @@ export default function NavBar() {
               {iteam.name}
             </Link>
           ))}
-          <button onClick={deletKey} className="mx-4">
-            remove Key
+          <button onClick={deletKey} className="mx-4 bg-red-500">
+            Log Out
           </button>
         </ul>
       </div>

@@ -113,7 +113,7 @@ const GuestInfo = () => {
   return (
     <>
       <div className="flex flex-col py-12 place-items-center justify-center gap-6">
-        <div className="text-4xl">enter guest name</div>
+        <div className="text-4xl">Enter PAX Name</div>
         <input
           type="text"
           id="apiKey"

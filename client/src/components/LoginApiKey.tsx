@@ -32,7 +32,7 @@ const LoginApiKey: React.FC<Props> = () => {
   return (
     <>
       <div className="flex flex-col h-screen place-items-center justify-center gap-6">
-        <div className="text-4xl">Login API Key</div>
+        <div className="text-4xl">Login</div>
         <input
           type="password"
           id="apiKey"
@@ -45,7 +45,7 @@ const LoginApiKey: React.FC<Props> = () => {
             saveApiKey();
           }}
         >
-          Save API Key
+          Login
         </button>
       </div>
     </>

@@ -39,10 +39,10 @@ const Session = (props: Props) => {
       <div className="text-2xl">{props.date}</div>
       <div className="text-2xl">{props.planeType}</div>
       <Link to="/Sessiondetails" className="Link  mt-12">
-        Session Details
+        Flight Details
       </Link>
-      <button className="text-2xl mt-12" onClick={deleteSession}>
-        Delete Session
+      <button className="text-2xl mt-12 bg-red-500" onClick={deleteSession}>
+        Delete Flight
       </button>
     </div>
   );

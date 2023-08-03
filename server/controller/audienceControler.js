@@ -18,7 +18,7 @@ const getOneOfAudienceForEditInfo = async (req, res) => {
 const getOneOfAudience = async (req, res) => {
     const { name } = req.body
 
-    const oneOfAudience = await audienceModel.findOneAndUpdate({ name }, { state: 'Accept' })
+    const oneOfAudience = await audienceModel.findOneAndUpdate({ name }, { state: 'ACCEPTED' })
 
     if (!oneOfAudience) {
         res.sendStatus(404)
@@ -32,7 +32,7 @@ const getOneOfAudience = async (req, res) => {
 const getOneOfAudienceByBarcode = async (req, res) => {
     const { barcode } = req.body
 
-    const oneOfAudience = await audienceModel.findOneAndUpdate({ barcode }, { state: 'Accept' })
+    const oneOfAudience = await audienceModel.findOneAndUpdate({ barcode }, { state: 'ACCEPTED' })
 
     if (!oneOfAudience) {
         res.sendStatus(404)
@@ -58,7 +58,7 @@ const getAllAudience = async (req, res) => {
 
         const sortedData = Object.entries(AudienceStateGroup);
 
-        const acceptGroup = sortedData.find(([state]) => state === "Accept");
+        const acceptGroup = sortedData.find(([state]) => state === "ACCEPTED");
         if (acceptGroup) {
             sortedData.splice(sortedData.indexOf(acceptGroup), 1);
             sortedData.unshift(acceptGroup);
@@ -96,7 +96,7 @@ const editInfo = async (req, res) => {
             seatLocation: seatLocation,
             size: size,
             PCS: PCS,
-            state: 'Missing',
+            state: 'NO SHOW ON THE GATE',
             Seq: Seq
         });
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import PrintGuestInfo from "./PrintGuestInfo";
 import ReactToPrint from "react-to-print";
@@ -56,26 +56,37 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
 
   const handleprintCounter = async () => {
     if (guestInfo.Seq === 0) {
-      const res = await axios.post(
-        "api/printConter",
-        {
-          sessionType: localStorage.getItem("sessionName"),
-        },
-        {
+      try {
+        const res = await axios.get("api/printConter", {
           headers: {
+            "content-type": "text/json",
             key: localStorage.getItem("apiKey"),
           },
+        });
+        if (res.status === 200) {
+          setGuestInfo((prevGuestInfo) => ({
+            ...prevGuestInfo,
+            Seq: res.data.printCounter,
+          }));
         }
-      );
-      if (res.status === 200) {
-        setGuestInfo((prevGuestInfo) => ({
-          ...prevGuestInfo,
-          Seq: res.data.printCounter,
-        }));
-        setsessionName(res.data.sessionType);
+      } catch (error) {
+        console.error(error);
       }
     }
   };
+
+  useEffect(() => {
+    axios
+      .get("api/IsThereASession", {
+        headers: {
+          key: localStorage.getItem("apiKey"),
+        },
+      })
+      .then((res) => {
+        setsessionName(res.data.sessionType);
+        console.log(res.data);
+      });
+  }, []);
 
   const postGuestInfo = async () => {
     try {
@@ -202,7 +213,7 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
             />
             <div
               ref={componentRef}
-              className="flex w-[755.91PX] justify-between bg-white"
+              className="flex w-[1000PX] justify-between bg-white"
             >
               <PrintGuestInfo
                 name={guestInfo.name}
@@ -251,9 +262,11 @@ const GuestInfoRegistration: React.FC<Props> = (props) => {
                 className="p-1 w-[188.98px] h-[75.59px]"
               />
               <div className="h-[1476.38px] flex place-items-center justify-center">
-                <p className="text-black text-center rotate-90 text-4xl">
-                  {fromTO}
-                </p>
+                <div className="text-black text-center text-4xl gap-12 flex flex-col">
+                  <p>{sessionName}</p>
+                  <p>{fromTO}</p>
+                  <p>Seq:{guestInfo.Seq}</p>
+                </div>
               </div>
               <PrintGuestInfo
                 name={guestInfo.name}

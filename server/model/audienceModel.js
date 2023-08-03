@@ -33,7 +33,7 @@ const audienceSchema = new Schema({
     },
     state: {
         type: String,
-        default: 'No show',
+        default: 'NO SHOW ON THE COUNTER',
         required: true
     },
     Seq: {
