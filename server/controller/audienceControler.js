@@ -43,6 +43,19 @@ const getOneOfAudienceByBarcode = async (req, res) => {
 
 }
 
+const getOneOfAudienceBySeq = async (req, res) => {
+    const { Seq } = req.body
+
+    const oneOfAudience = await audienceModel.findOneAndUpdate({ Seq }, { state: 'ACCEPTED' })
+
+    if (!oneOfAudience) {
+        res.sendStatus(404)
+        return;
+    }
+
+    res.send(oneOfAudience);
+}
+
 
 const getAllAudience = async (req, res) => {
     try {
@@ -126,6 +139,7 @@ const deleteAudience = async (req, res) => {
 
 module.exports = {
     getOneOfAudience, getOneOfAudienceForEditInfo,
-    getOneOfAudienceByBarcode, editInfo, getAllAudience,
+    getOneOfAudienceByBarcode, getOneOfAudienceBySeq,
+    editInfo, getAllAudience,
     getAllAudienceForSearchEngine, deleteAudience
 }

@@ -10,6 +10,7 @@ import BarcodeScannerPage from "./pages/BarcodeScannerPage";
 import NameScannerPage from "./pages/NameScannerPage";
 import Error404 from "./components/Error404";
 import SessiondetailsPage from "./pages/SessiondetailsPage";
+import SeqScannerPage from "./pages/SeqScannerPage";
 
 function App() {
   const [apiKey, setApiKey] = useState("");
@@ -47,6 +48,10 @@ function App() {
             <Route
               path="/GuestSearch/NameScanner"
               element={<NameScannerPage />}
+            />
+            <Route
+              path="/GuestSearch/SeqScanner"
+              element={<SeqScannerPage />}
             />
           </>
         )}

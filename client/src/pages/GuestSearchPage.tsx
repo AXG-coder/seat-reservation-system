@@ -12,6 +12,9 @@ const GuestSearchPage = () => {
         <Link to="NameScanner" className="Link">
           Name Scanner
         </Link>
+        <Link to="SeqScanner" className="Link">
+          Seq Scanner
+        </Link>
       </div>
     </>
   );

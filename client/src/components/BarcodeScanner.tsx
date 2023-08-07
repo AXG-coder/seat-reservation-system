@@ -136,7 +136,7 @@ const BarcodeScanner = () => {
   return (
     <>
       <div className="flex flex-col pt-32 place-items-center justify-center gap-6">
-        <div className="text-4xl">Enter guest barcode</div>
+        <div className="text-4xl">Enter PAX barcode</div>
         <input
           type="text"
           id="apiKey"
