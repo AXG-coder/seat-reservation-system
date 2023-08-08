@@ -22,6 +22,8 @@ interface Seat {
 const GuestInfo = () => {
   const [guestName, setguestName] = useState("");
 
+  const [guestSeq, setguestSeq] = useState("");
+
   const [viewInfo, setViewInfo] = useState(false);
 
   const [guestInfo, setGuestInfo] = useState<guestInfoiteIteam | undefined>();
@@ -110,33 +112,86 @@ const GuestInfo = () => {
     }
   };
 
+  const getOneOfGuestBySeq = async () => {
+    try {
+      const res = await axios.post(
+        "api/getOneOfAudienceForEditInfobySeq",
+        {
+          Seq: guestSeq,
+        },
+        {
+          headers: {
+            key: localStorage.getItem("apiKey"),
+          },
+        }
+      );
+      if (res.status === 200) {
+        setGuestInfo(res.data);
+        setViewInfo(true);
+        setguestSeq("");
+        getSeat();
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No guest has been registered in this name",
+      });
+      setViewInfo(false);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col py-12 place-items-center justify-center gap-6">
-        <div className="text-4xl">Enter PAX Name</div>
-        <input
-          type="text"
-          id="apiKey"
-          value={guestName}
-          onChange={(e) => setguestName(e.target.value)}
-          className="rounded-xl h-12 text-center"
-        />
-        {guestName === "" ? null : (
-          <div className="max-h-[300px] overflow-y-auto bg-Secondary p-2 rounded-lg ">
-            {filterName.map((name) => (
-              <h2
-                key={name}
-                onClick={() => setguestName(name)}
-                className="text-end cursor-pointer mb-2"
-              >
-                {name}
-              </h2>
-            ))}
+        <div className="flex justify-center place-items-center gap-10">
+          <div className="flex flex-col  place-items-center justify-center">
+            <div className="flex flex-col py-12 place-items-center justify-center gap-6">
+              <div className="text-4xl">Enter PAX Name</div>
+              <input
+                type="text"
+                id="apiKey"
+                value={guestName}
+                onChange={(e) => setguestName(e.target.value)}
+                className="rounded-xl h-12 text-center"
+              />
+            </div>
+            {guestName === "" ? null : (
+              <div className="max-h-[300px] overflow-y-auto bg-Secondary p-2 rounded-lg ">
+                {filterName.map((name) => (
+                  <h2
+                    key={name}
+                    onClick={() => setguestName(name)}
+                    className="text-end cursor-pointer mb-2"
+                  >
+                    {name}
+                  </h2>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-        <button className="text-1xl" onClick={getOneOfGuest}>
-          research
-        </button>
+          <h1>OR</h1>
+          <div className="flex flex-col py-12 place-items-center justify-center gap-6">
+            <div className="text-4xl">Enter Seq</div>
+            <input
+              type="text"
+              id="apiKey"
+              value={guestSeq}
+              onChange={(e) => setguestSeq(e.target.value)}
+              className="rounded-xl h-12 text-center"
+            />
+          </div>
+        </div>
+        <div className="flex gap-32">
+          <button className="text-1xl" onClick={getOneOfGuest}>
+            research
+          </button>
+          <h1>|</h1>
+          <button className="text-1xl" onClick={getOneOfGuestBySeq}>
+            research
+          </button>
+        </div>
       </div>
       {guestInfo !== undefined && viewInfo ? (
         <GuestInfoRegistration

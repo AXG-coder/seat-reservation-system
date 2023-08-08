@@ -3,7 +3,7 @@ const { sessionRegistration, IsThereASession, deleteSessionAndAudience, printCou
 const { NameRegistration, NameRegistrationUsingExcel } = require("../controller/AudienceRegistrationController");
 const { getOneOfAudience, editInfo, getOneOfAudienceByBarcode,
     getAllAudience, getOneOfAudienceForEditInfo, getAllAudienceForSearchEngine,
-    deleteAudience, getOneOfAudienceBySeq } = require("../controller/audienceControler");
+    deleteAudience, getOneOfAudienceBySeq, getOneOfAudienceForEditInfobySeq } = require("../controller/audienceControler");
 const { authKey } = require("../auth/apiKey");
 const { validKey } = require("../controller/apiKeyControler");
 const { getSeatState, getPlanesTypes } = require("../controller/SeatControler");
@@ -21,6 +21,8 @@ router.post('/NameRegistration', authKey(process.env.EMPLOYEE_KEY), NameRegistra
 router.post('/NameRegistrationUsingExcel', authKey(process.env.EMPLOYEE_KEY), NameRegistrationUsingExcel)
 
 router.post("/getOneOfAudienceForEditInfo", authKey(process.env.EMPLOYEE_KEY), getOneOfAudienceForEditInfo)
+
+router.post("/getOneOfAudienceForEditInfobySeq", authKey(process.env.EMPLOYEE_KEY), getOneOfAudienceForEditInfobySeq)
 
 router.post("/getOneOfAudience", authKey(process.env.EMPLOYEE_KEY), getOneOfAudience)
 
